@@ -3,16 +3,17 @@
 #include <avr/wdt.h>
 
 const int intervalos = (24 * 3600) / 5;
-const int msAberto = 2000;
+const int msAberto = 5000;
 const int pinRele = 8;
 
 volatile int intervalosFeitos;
 
 void setup()
 {
-  Serial.begin(9600);
-  intervalosFeitos = 0;       //inicia
-  digitalWrite(pinRele, LOW); //para nao ter estado indefinodo no pinRele
+  // Serial.begin(9600);
+  intervalosFeitos = intervalos;       //inicia
+  pinMode(pinRele, OUTPUT);
+  digitalWrite(pinRele, HIGH); //para nao ter estado indefinodo no pinRele
 }
 
 ISR(WDT_vect)
@@ -52,10 +53,13 @@ void loop()
   {
     noInterrupts(); //não deixar sem interrompido entquanto abre a mangueira
 
-    digitalWrite(pinRele, HIGH);
-    // Serial.println("deu");
-    delay(msAberto);
     digitalWrite(pinRele, LOW);
+    // Serial.println("deu");
+
+    delay(msAberto);
+    digitalWrite(pinRele, HIGH);
+    Serial.println("desligou");
+
 
     intervalosFeitos = 0;
     delay(10000); //espera um pouco pra dormir de novo
