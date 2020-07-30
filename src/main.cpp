@@ -1,70 +1,52 @@
 #include <Arduino.h>
-#include <avr/sleep.h>
-#include <avr/wdt.h>
 
-const int intervalos = (24 * 3600) / 5;
-const int msAberto = 5000;
-const int pinRele = 8;
+const int intervalos= (24*3600)/4;
+const int msAberto=2000;
+const int pinRele=8;
+
 
 volatile int intervalosFeitos;
 
-void setup()
-{
+
+
+void setup() {
+//set timer1 interrupt at 1Hz
+  TCCR1A = 0;// set entire TCCR1A register to 0
+  TCCR1B = 0;// same for TCCR1B
+  TCNT1  = 0;//initialize counter value to 0
+  // set compare match register for 1hz increments
+  //compara match para 4 segundos
+  OCR1A = (16e6) / (1024*(1/              4          )) - 1; // = (16*10^6) / (1*1024) - 1 (must be <65536)
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS10 and CS12 bits for 1024 prescaler
+  TCCR1B |= (1 << CS12) | (1 << CS10);  
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+
+  sei();
+
   // Serial.begin(9600);
-  intervalosFeitos = intervalos;       //inicia
-  pinMode(pinRele, OUTPUT);
+  intervalosFeitos = intervalos; //inicia 
+  pinMode(pinRele,OUTPUT);
   digitalWrite(pinRele, HIGH); //para nao ter estado indefinodo no pinRele
 }
 
-ISR(WDT_vect)
-{
-  wdt_disable(); // disable watchdog
-} // end of WDT_vect
 
-void sleep()
-{
-    ADCSRA = 0;
-
-  // clear various "reset" flags
-  MCUSR = 0;
-  // allow changes, disable reset
-  WDTCSR = bit(WDCE) | bit(WDE);
-  // set interrupt mode and an interval
-  WDTCSR = bit(WDIE) | bit(WDP3) | bit(WDP0); // set WDIE, and 8 seconds delay
-  wdt_reset();                                // pat the dog
-
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  noInterrupts(); // timed sequence follows
-  sleep_enable();
-
-  // turn off brown-out enable in software
-  MCUCR = bit(BODS) | bit(BODSE);
-  MCUCR = bit(BODS);
-  interrupts(); // guarantees next instruction executed
-  sleep_cpu();
-
-  // cancel sleep as a precaution
-  sleep_disable();
+ISR(TIMER1_COMPA_vect){//timer1 interrupt 1Hz toggles pin 13 (LED)
+  intervalosFeitos++;
 }
 
-void loop()
-{
-  if (intervalosFeitos >= intervalos)
-  {
+void loop() {
+  if (intervalosFeitos>=intervalos) {
     noInterrupts(); //não deixar sem interrompido entquanto abre a mangueira
 
     digitalWrite(pinRele, LOW);
     // Serial.println("deu");
-
     delay(msAberto);
     digitalWrite(pinRele, HIGH);
-    Serial.println("desligou");
 
-
-    intervalosFeitos = 0;
-    delay(10000); //espera um pouco pra dormir de novo
+    intervalosFeitos=0;
     interrupts(); //interrupts de novo
   }
-  intervalosFeitos++;
-  sleep();
 }
