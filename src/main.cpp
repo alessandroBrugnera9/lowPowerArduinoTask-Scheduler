@@ -2,8 +2,8 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 
-const int intervalos = (24 * 3600) / 5;
-const int msAberto = 2000;
+const unsigned int intervalos = (48 * 3600) / 8;
+const int msAberto = 20000;
 const int pinRele = 8;
 
 volatile int intervalosFeitos;
