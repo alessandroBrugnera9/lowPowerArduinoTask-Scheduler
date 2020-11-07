@@ -3,10 +3,11 @@
 #include <avr/wdt.h>
 
 const long msAberto = 25000;
-const unsigned int intervalos = (24 * 3600) / 8 - 2; //segunda parte eh o tempo aberto
+const unsigned long intervalosPorHora=3600/8; 
+const unsigned long intervalos = (48 * intervalosPorHora) - 2; //segunda parte eh o tempo aberto
 const int pinRele = 8;
 
-volatile int intervalosFeitos;
+volatile unsigned long intervalosFeitos;
 
 void setup()
 {
@@ -60,8 +61,9 @@ void loop()
 
     intervalosFeitos = 0;
     delay(10000); //espera um pouco pra dormir de novo
-    // interrupts(); //interrupts de novo
   }
   intervalosFeitos++;
   sleep();
+
+
 }
