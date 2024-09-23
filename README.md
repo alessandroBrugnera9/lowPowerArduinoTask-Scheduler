@@ -10,10 +10,16 @@ The core idea is to put the Arduino into **deep sleep** for controlled periods. 
 
 The primary example in this repository illustrates a daily task of watering a garden using a solenoid valve. The implementation includes:
 
-- **Deep sleep** for a maximum of **8 seconds** to optimize power savings.
-- A task that takes approximately **10 seconds** to execute.
+- **Deep sleep** with maximun sleep cycle time **8 seconds** to optimize power savings.
+- A daily task that takes approximately **10 seconds** to execute.
 
 This setup demonstrates how to balance power efficiency with the need to perform tasks periodically.
+
+## Examples
+- hidranteAutomatico.cpp
+-- Implementation in portuguese for the watering system.
+-- Uses relay and solenoid valve.
+-- Executes every 48 hours, with 8 seconds sleep cycle.
 
 ## Important Notes
 
