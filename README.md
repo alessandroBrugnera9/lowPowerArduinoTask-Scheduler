@@ -17,9 +17,9 @@ This setup demonstrates how to balance power efficiency with the need to perform
 
 ## Examples
 - hidranteAutomatico.cpp
--- Implementation in portuguese for the watering system.
--- Uses relay and solenoid valve.
--- Executes every 48 hours, with 8 seconds sleep cycle.
+  - Implementation in portuguese for the watering system.
+  - Uses relay and solenoid valve.
+  - Executes every 48 hours, with 8 seconds sleep cycle.
 
 ## Important Notes
 
